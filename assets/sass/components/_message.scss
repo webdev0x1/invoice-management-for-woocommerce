@@ -1,0 +1,13 @@
+
+.inv_message {
+    background: $color-white;
+    @include padding(10px 15px);
+
+    &.inv_message-error {
+        border-left: 4px solid $color-red-1;
+    }
+
+    p {
+        @include margin(0px);
+    }
+}

@@ -1,0 +1,74 @@
+/**
+ * SCSS file
+ */
+
+// @import 'compass/reset';
+@import 'bourbon', 'neat';
+@import 'variables', 'mixins';
+@import 'components/message';
+@import 'components/label';
+@import 'components/form';
+@import 'components/supplier_menu';
+
+.card {
+    background: $color-white;
+    @include border-radius(5px);
+    @include box-shadow(0 5px 10px rgba(44, 62, 79, 0.2));
+    padding: 20px;
+}
+
+.no-supplier-card {
+    @extend .card;
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    grid-gap: 10px;
+    margin: 100px auto;
+    width: 600px;
+    align-items: center;
+
+    .content {
+        text-align: center;
+        padding-left: 20px;
+        padding-right: 20px;
+
+        h3 {
+            margin: 0px 0px 15px 0px;
+            font-weight: 700;
+            font-size: 24px;
+            color: $color-violet-2;
+            text-transform: uppercase;
+        }
+
+        p {
+            margin: 0px 0px 10px 0px;
+            font-size: 16px;
+            color: $color-violet-2;
+        }
+
+        a {
+            display: block;
+            background: $color-violet-1;
+            width: auto;
+            height: 50px;
+            @include border-radius(50px / 2);
+            color: $color-white;
+            text-decoration: none;
+            line-height: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.2s ease-out;
+
+            &:hover {
+                background: $color-violet-2;
+                @include box-shadow(0 5px 10px rgba(44, 62, 79, 0.2));
+             }
+         }
+     }
+ }
+
+// Pages
+@import 'pages/editor';
+@import 'pages/products';
+@import 'pages/wc_products';
+@import 'pages/go_pro';

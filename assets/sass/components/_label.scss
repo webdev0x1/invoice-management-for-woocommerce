@@ -1,0 +1,26 @@
+
+.inv_label {
+    background: $color-grey-4;
+    color: $color-white;
+    @include padding(5px 10px);
+    @include border-radius(2px);
+
+    &:hover {
+        cursor: default;
+    }
+}
+
+.inv_label_success {
+    @extend .inv_label;
+    background: $color-green-1;
+}
+
+.inv_label_warning {
+    @extend .inv_label;
+    background: $color-orange-1;
+}
+
+.inv_label_danger {
+    @extend .inv_label;
+    background: $color-red-1;
+}

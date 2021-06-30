@@ -1,0 +1,141 @@
+
+body.post-type-#{$post_type} {
+
+    // Informations metabox
+    div.postbox#inv_empye_post_informations {
+        .inside {
+            .informations-form-fields {
+                @extend .form-fields;
+            }
+        }
+    }
+
+    .inv_empye_wc_products_linked {
+        text-align: right;
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            margin-bottom: 20px;
+
+            div {
+                text-align: left;
+
+                .number {
+                    font-size: 30px;
+                    margin: 0px;
+                }
+                .label {
+                    font-size: 13px;
+                    margin: 0px;
+                }
+
+                &.nb_low_stocks {
+                    p {
+                        color: $color-orange-2;
+                    }
+                }
+            }
+        }
+    }
+
+    /*
+    // Informations metabox
+    div.postbox#inv_empye_emails_history {
+        .inside {
+            table {
+                @include size(100% auto);
+                border-collapse: collapse;
+
+                thead {
+                    background: $color-grey-1;
+
+                    th {
+                        @include padding(5px null);
+                        text-align: center;
+                        border-right: 1px solid $color-white;
+                        text-transform: uppercase;
+
+                        &.checkbox-column {
+                            @include size(20px null);
+                        }
+
+                        &.stock-column {
+                            @include size(100px null);
+                        }
+
+                        &.price-column {
+                            @include size(100px null);
+                        }
+                    }
+                }
+
+                tbody {
+                    tr {
+                        border-bottom: 1px solid $color-grey-1;
+
+                        td {
+                            @include padding(3px 5px);
+                        }
+                    }
+                }
+            }
+
+            .table_ctas {
+                @include margin(10px null null null);
+            }
+        }
+    }
+    */
+
+    // For modal
+    .ui-widget-overlay.custom-overlay {
+        @include position(fixed, 0px 0px 0px 0px);
+        background-color: $color-blue-3;
+        background-image: none;
+        opacity: 0.9;
+        z-index: 1040;
+    }
+
+    #adminmenuback {
+        z-index: 1041;
+    }
+}
+
+// EMAIL MODALBOX
+.inv_empye-dialog {
+    @include display(none);
+    @include border-radius(5px);
+    border: 1px solid $color-grey-2;
+    z-index: 1041;
+
+    .ui-dialog-titlebar {
+        @include padding(10px);
+        line-height: 20px;
+        background: $color-grey-2;
+
+        .ui-dialog-title {
+            font-size: 1.4em;
+        }
+
+        .ui-dialog-titlebar-close {
+            border: none;
+            background: none;
+            color: $color-white;
+            font-weight: 700;
+            float: right;
+        }
+    }
+
+    .modal-form {
+        @extend .form-fields;
+        @include padding(10px 0px);
+
+        .form-field {
+            textarea,
+            .wp-editor-wrap {
+                @include grid-column(12);
+            }
+        }
+    }
+}

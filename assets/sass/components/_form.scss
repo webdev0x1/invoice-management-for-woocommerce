@@ -1,0 +1,50 @@
+
+.form-fields {
+
+    .form-title {
+        @include size(100% auto);
+        @include margin(null null 10px null);
+        border-bottom: 1px solid $color-grey-1;
+
+        h4 {
+            @include margin(0px null);
+            @include padding(5px null);
+            font-size: 1.1em;
+        }
+
+        p {
+            @include margin(0px null 10px null);
+        }
+    }
+
+    .form-field {
+        @include grid-container;
+        @include margin(null null 10px null);
+
+        label {
+            @include grid-column(4);
+            @include padding(6px null null);
+            line-height: 1.4em;
+            font-weight: 700;
+        }
+
+        input {
+            @include grid-column(8);
+            @include size(null 30px);
+            line-height: 30px;
+        }
+
+        textarea,
+        .wp-editor-wrap {
+            @include grid-column(8);
+            min-height: 200px;
+            line-height: 1.4em;
+        }
+
+        .button {
+            @include grid-shift(4);
+            @include size(auto);
+            @include margin(null null null 20px);
+        }
+    }
+}

@@ -1,0 +1,21 @@
+
+// +--------+
+// | MIXINS |
+// +--------+
+
+@mixin border-radius($radius) {
+    @include border-top-radius($radius);
+    @include border-right-radius($radius);
+    @include border-bottom-radius($radius);
+    @include border-left-radius($radius);
+}
+
+// $params: X Y BLUR COLOR
+@mixin box-shadow($params) {
+    @include prefixer(box-shadow, $params, webkit moz spec o);
+}
+
+@mixin omega-reset($nth) {
+    &:nth-child(#{$nth}) { margin-right: flex-gutter(); }
+    &:nth-child(#{$nth}+1) { clear: none }
+}

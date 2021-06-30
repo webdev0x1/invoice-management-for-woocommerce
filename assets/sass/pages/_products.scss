@@ -1,0 +1,112 @@
+.inv_empye_supplier_products_page {
+
+    .nav {
+        margin-bottom: 20px;
+
+        ul {
+            padding: 0px;
+            list-style: none;
+            border-bottom: 1px solid $color-grey-2;
+            height: 40px;
+
+            li {
+                display: inline-block;
+                margin: 0;
+                padding: 0px 10px;
+                line-height: 40px;
+                font-size: 1.1em;
+
+                a {
+                    text-decoration: none;
+
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+
+                // &:last-child {
+                //     border-right: none;
+                // }
+
+                &.current {
+                    font-weight: 700;
+                    border: 1px solid $color-grey-2;
+                    border-bottom: none;
+                    background: #f1f1f1;
+                    padding: 0px 20px;
+                }
+            }
+        }
+    }
+
+    // Table of products
+    table#inv_empye_supplier_products_table {
+        width: 100%;
+        border-collapse: collapse;
+        background: $color-white;
+
+        thead {
+            // background: $color-grey-1;
+
+            th {
+                @include padding(5px 10px);
+                text-align: left;
+                text-transform: uppercase;
+                border: none;
+                border-bottom: 2px solid $color-grey-1;
+                font-size: 0.9em;
+
+                &.checkbox-column {
+                    @include size(20px null);
+                }
+
+                &.stock-column {
+                    @include size(100px null);
+                }
+
+                &.price-column {
+                    @include size(100px null);
+                }
+            }
+        }
+
+        tbody {
+            tr {
+                // border-bottom: 1px solid $color-grey-1;
+
+                &:nth-child(even) {
+                    background: #F8F8F8;
+                }
+
+                &.warning-row {
+                    background: #FDECD1;
+                }
+
+                td {
+                    @include padding(5px 10px);
+
+                    small {
+                        display: block;
+                    }
+
+                    .dashicons {
+                        font-size: 1.4em;
+                        float: right;
+
+                        &.dashicons-warning {
+                            color: $color-orange-1;
+                        }
+                    }
+
+                    &.cell-text-right {
+                        text-align: right;
+                    }
+                }
+            }
+        }
+    }
+
+    .table_ctas {
+        @include margin(10px null null null);
+    }
+}

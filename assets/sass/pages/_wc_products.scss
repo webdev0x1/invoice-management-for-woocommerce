@@ -1,0 +1,12 @@
+.post-type-product {
+
+    // Products table
+    table.widefat {
+        .column-inv_supplier_supplier,
+        .column-inv_supplier_supplier_price,
+        .column-inv_supplier_supplier_packaging,
+        .column-inv_supplier_supplier_part_number {
+            width: 10%;
+        }
+    }
+}

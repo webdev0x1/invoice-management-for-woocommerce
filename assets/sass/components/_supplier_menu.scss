@@ -1,0 +1,43 @@
+
+    .empye_supplier_menu {
+        margin-bottom: 20px;
+
+        ul {
+            padding: 0px;
+            list-style: none;
+            border-bottom: 1px solid $color-grey-2;
+            height: 40px;
+
+            li {
+                display: inline-block;
+                margin: 0;
+                padding: 0px 10px;
+                line-height: 40px;
+                font-size: 1.1em;
+
+                a {
+                    text-decoration: none;
+
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+
+                // &:last-child {
+                //     border-right: none;
+                // }
+
+                &.current {
+                    font-weight: 700;
+                    border: 1px solid $color-grey-2;
+                    border-bottom: none;
+                    background: #f1f1f1;
+                    padding: 0px 20px;
+
+                    a {
+                        color: $color-wordpress-text;
+                    }
+                }
+            }
+        }
+    }

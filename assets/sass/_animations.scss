@@ -1,0 +1,7 @@
+@keyframes wintualBounce {
+    0%   { @include transform(translateY(0px)); }
+    20%  { @include transform(translateY(10px)); }
+    50%  { @include transform(translateY(0px)); }
+    70%  { @include transform(translateY(10px)); }
+    100% { @include transform(translateY(0px)); }
+}
