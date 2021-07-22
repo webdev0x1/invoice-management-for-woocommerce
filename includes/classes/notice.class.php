@@ -13,7 +13,7 @@ if (!class_exists('INV_EMPYE_Notice')) {
         {
             wp_enqueue_script(
                 INV_EMPYE_POST_TYPE . '-admin-notice-js',
-                INV_EMPYE_PLUGIN_URL . 'assets/scripts/admin-notices.js'
+                __FILE__ . 'assets/scripts/admin-notices.js'
             );
         }
     }

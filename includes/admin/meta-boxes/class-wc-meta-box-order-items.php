@@ -15,9 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * My_WC_Meta_Box_Order_Items Class.
+ * INV_WC_Meta_Box_Order_Items Class.
  */
-class My_Custom_WC_Meta_Box_Order_Items {
+class INV_WC_Meta_Box_Order_Items {
 
 	/**
 	 * Output the metabox.
@@ -51,8 +51,8 @@ class My_Custom_WC_Meta_Box_Order_Items {
 		 * This $_POST variable's data has been validated and escaped
 		 * inside `wc_save_order_items()` function.
 		 */
-		wc_save_order_items( $post_id, $_POST );
+		wc_save_order_items( $post_id, wc_clean($_POST) );
 	}
 }
 
-new My_Custom_WC_Meta_Box_Order_Items();
+new INV_WC_Meta_Box_Order_Items();

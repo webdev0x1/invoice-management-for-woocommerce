@@ -87,9 +87,9 @@ class WC_Meta_Box_Order_Downloads {
 	 */
 	public static function save( $post_id, $post ) {
 		if ( isset( $_POST['permission_id'] ) ) {
-			$permission_ids      = $_POST['permission_id'];
-			$downloads_remaining = $_POST['downloads_remaining'];
-			$access_expires      = $_POST['access_expires'];
+			$permission_ids      = sanitize_text_field($_POST['permission_id']);
+			$downloads_remaining = sanitize_text_field($_POST['downloads_remaining']);
+			$access_expires      = sanitize_text_field($_POST['access_expires']);
 			$max                 = max( array_keys( $permission_ids ) );
 
 			for ( $i = 0; $i <= $max; $i ++ ) {

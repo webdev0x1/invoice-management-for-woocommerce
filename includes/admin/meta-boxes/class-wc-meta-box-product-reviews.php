@@ -52,7 +52,7 @@ class WC_Meta_Box_Product_Reviews {
 
 		$comment_id = $data['comment_ID'];
 
-		update_comment_meta( $comment_id, 'rating', intval( wp_unslash( $_POST['rating'] ) ) ); // WPCS: input var ok.
+		update_comment_meta( $comment_id, 'rating', intval( sanitize_text_field(wp_unslash( $_POST['rating'] )) ) ); // WPCS: input var ok.
 
 		// Return regular value after updating.
 		return $data;

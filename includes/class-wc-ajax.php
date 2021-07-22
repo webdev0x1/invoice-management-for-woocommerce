@@ -1,8 +1,8 @@
 <?php
 /**
- * WooCommerce WC_AJAX. AJAX Event Handlers.
+ * WooCommerce INV_WC_AJAX. AJAX Event Handlers.
  *
- * @class   My_WC_AJAX
+ * @class   INV_WC_AJAX
  * @package WooCommerce\Classes
  */
 
@@ -12,9 +12,9 @@ use Automattic\WooCommerce\Utilities\NumberUtil;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * WC_Ajax class.
+ * INV_WC_Ajax class.
  */
-class My_WC_AJAX {
+class INV_WC_AJAX {
 
 	/**
 	 * Hook in ajax handlers.
@@ -210,7 +210,7 @@ class My_WC_AJAX {
 		check_ajax_referer( 'apply-coupon', 'security' );
 
 		if ( ! empty( $_POST['coupon_code'] ) ) {
-			WC()->cart->add_discount( wc_format_coupon_code( wp_unslash( $_POST['coupon_code'] ) ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			WC()->cart->add_discount( wc_format_coupon_code( wc_clean(wp_unslash( $_POST['coupon_code'] ) ) ) ); 
 		} else {
 			wc_add_notice( WC_Coupon::get_generic_coupon_error( WC_Coupon::E_WC_COUPON_PLEASE_ENTER ), 'error' );
 		}
@@ -225,7 +225,7 @@ class My_WC_AJAX {
 	public static function remove_coupon() {
 		check_ajax_referer( 'remove-coupon', 'security' );
 
-		$coupon = isset( $_POST['coupon'] ) ? wc_format_coupon_code( wp_unslash( $_POST['coupon'] ) ) : false; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$coupon = isset( $_POST['coupon'] ) ? wc_format_coupon_code( wc_clean(wp_unslash( $_POST['coupon'] ) )) : false;
 
 		if ( empty( $coupon ) ) {
 			wc_add_notice( __( 'Sorry there was a problem removing this coupon.', 'woocommerce' ), 'error' );
@@ -298,7 +298,7 @@ class My_WC_AJAX {
 			self::update_order_review_expired();
 		}
 
-		do_action( 'woocommerce_checkout_update_order_review', isset( $_POST['post_data'] ) ? wp_unslash( $_POST['post_data'] ) : '' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		do_action( 'woocommerce_checkout_update_order_review', isset( $_POST['post_data'] ) ? wc_clean(wp_unslash( $_POST['post_data'] )) : '' ); 
 
 		$chosen_shipping_methods = WC()->session->get( 'chosen_shipping_methods' );
 		$posted_shipping_methods = isset( $_POST['shipping_method'] ) ? wc_clean( wp_unslash( $_POST['shipping_method'] ) ) : array();
@@ -405,9 +405,9 @@ class My_WC_AJAX {
 			return;
 		}
 
-		$product_id        = apply_filters( 'woocommerce_add_to_cart_product_id', absint( $_POST['product_id'] ) );
+		$product_id        = apply_filters( 'woocommerce_add_to_cart_product_id', absint( wc_clean($_POST['product_id'] )) );
 		$product           = wc_get_product( $product_id );
-		$quantity          = empty( $_POST['quantity'] ) ? 1 : wc_stock_amount( wp_unslash( $_POST['quantity'] ) );
+		$quantity          = empty( $_POST['quantity'] ) ? 1 : wc_stock_amount( wc_clean(wp_unslash( $_POST['quantity'] )) );
 		$passed_validation = apply_filters( 'woocommerce_add_to_cart_validation', true, $product_id, $quantity );
 		$product_status    = get_post_status( $product_id );
 		$variation_id      = 0;
@@ -449,7 +449,7 @@ class My_WC_AJAX {
 		ob_start();
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing
-		$cart_item_key = wc_clean( isset( $_POST['cart_item_key'] ) ? wp_unslash( $_POST['cart_item_key'] ) : '' );
+		$cart_item_key = wc_clean( isset( $_POST['cart_item_key'] ) ? wc_clean(wp_unslash( $_POST['cart_item_key'] )) : '' );
 
 		if ( $cart_item_key && false !== WC()->cart->remove_cart_item( $cart_item_key ) ) {
 			self::get_refreshed_fragments();
@@ -478,14 +478,14 @@ class My_WC_AJAX {
 			wp_die();
 		}
 
-		$variable_product = wc_get_product( absint( $_POST['product_id'] ) );
+		$variable_product = wc_get_product( absint( wc_clean($_POST['product_id']) ) );
 
 		if ( ! $variable_product ) {
 			wp_die();
 		}
 
 		$data_store   = WC_Data_Store::load( 'product' );
-		$variation_id = $data_store->find_matching_product_variation( $variable_product, wp_unslash( $_POST ) );
+		$variation_id = $data_store->find_matching_product_variation( $variable_product, wc_clean(wp_unslash($_POST ) );
 		$variation    = $variation_id ? $variable_product->get_available_variation( $variation_id ) : false;
 		wp_send_json( $variation );
 		// phpcs:enable
@@ -569,7 +569,7 @@ class My_WC_AJAX {
 			wp_die( -1 );
 		}
 
-		$i             = absint( $_POST['i'] );
+		$i             = absint( wc_clean($_POST['i'] ));
 		$metabox_class = array();
 		$attribute     = new WC_Product_Attribute();
 
@@ -594,7 +594,7 @@ class My_WC_AJAX {
 		check_ajax_referer( 'add-attribute', 'security' );
 
 		if ( current_user_can( 'manage_product_terms' ) && isset( $_POST['taxonomy'], $_POST['term'] ) ) {
-			$taxonomy = esc_attr( wp_unslash( $_POST['taxonomy'] ) ); // phpcs:ignore
+			$taxonomy = esc_attr( wc_clean(wp_unslash( $_POST['taxonomy'] ) ));
 			$term     = wc_clean( wp_unslash( $_POST['term'] ) );
 
 			if ( taxonomy_exists( $taxonomy ) ) {
@@ -629,7 +629,7 @@ class My_WC_AJAX {
 		check_ajax_referer( 'delete-variations', 'security' );
 
 		if ( current_user_can( 'edit_products' ) && isset( $_POST['variation_ids'] ) ) {
-			$variation_ids = array_map( 'absint', (array) wp_unslash( $_POST['variation_ids'] ) );
+			$variation_ids = array_map( 'absint', (array) wc_clean(wp_unslash( $_POST['variation_ids'] ) ));
 
 			foreach ( $variation_ids as $variation_id ) {
 				if ( 'product_variation' === get_post_type( $variation_id ) ) {
@@ -655,10 +655,10 @@ class My_WC_AJAX {
 		$response = array();
 
 		try {
-			parse_str( wp_unslash( $_POST['data'] ), $data ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			parse_str( wc_clean(wp_unslash( $_POST['data'] )), $data ); 
 
 			$attributes   = WC_Meta_Box_Product_Data::prepare_attributes( $data );
-			$product_id   = absint( wp_unslash( $_POST['post_id'] ) );
+			$product_id   = absint( wc_clean(wp_unslash( $_POST['post_id'] ) ));
 			$product_type = ! empty( $_POST['product_type'] ) ? wc_clean( wp_unslash( $_POST['product_type'] ) ) : 'simple';
 			$classname    = WC_Product_Factory::get_product_classname( $product_id, $product_type );
 			$product      = new $classname( $product_id );
@@ -708,9 +708,9 @@ class My_WC_AJAX {
 
 		global $post; // Set $post global so its available, like within the admin screens.
 
-		$product_id       = intval( $_POST['post_id'] );
+		$product_id       = intval( wc_clean($_POST['post_id'] ));
 		$post             = get_post( $product_id ); // phpcs:ignore
-		$loop             = intval( $_POST['loop'] );
+		$loop             = intval( wc_clean($_POST['loop'] ));
 		$product_object   = wc_get_product_object( 'variable', $product_id ); // Forces type to variable in case product is unsaved.
 		$variation_object = wc_get_product_object( 'variation' );
 		$variation_object->set_parent_id( $product_id );
@@ -735,7 +735,7 @@ class My_WC_AJAX {
 		wc_maybe_define_constant( 'WC_MAX_LINKED_VARIATIONS', 50 );
 		wc_set_time_limit( 0 );
 
-		$post_id = isset( $_POST['post_id'] ) ? intval( $_POST['post_id'] ) : 0;
+		$post_id = isset( $_POST['post_id'] ) ? intval( wc_clean($_POST['post_id'] )) : 0;
 
 		if ( ! $post_id ) {
 			wp_die();
@@ -764,9 +764,9 @@ class My_WC_AJAX {
 			wp_die( -1 );
 		}
 		$download_id   = wc_clean( wp_unslash( $_POST['download_id'] ) );
-		$product_id    = intval( $_POST['product_id'] );
-		$order_id      = intval( $_POST['order_id'] );
-		$permission_id = absint( $_POST['permission_id'] );
+		$product_id    = intval( wc_clean($_POST['product_id'] ));
+		$order_id      = intval( wc_clean($_POST['order_id'] ));
+		$permission_id = absint( wc_clean($_POST['permission_id'] ));
 		$data_store    = WC_Data_Store::load( 'customer-download' );
 		$data_store->delete_by_id( $permission_id );
 
@@ -790,9 +790,9 @@ class My_WC_AJAX {
 
 		$wpdb->hide_errors();
 
-		$order_id     = intval( $_POST['order_id'] );
-		$product_ids  = array_filter( array_map( 'absint', (array) wp_unslash( $_POST['product_ids'] ) ) );
-		$loop         = intval( $_POST['loop'] );
+		$order_id     = intval( wc_clean($_POST['order_id'] ));
+		$product_ids  = array_filter( array_map( 'absint', (array) wc_clean(wp_unslash( $_POST['product_ids'] ) )) );
+		$loop         = intval( wc_clean($_POST['loop'] ));
 		$file_counter = 0;
 		$order        = wc_get_order( $order_id );
 		$items        = $order->get_items();
@@ -840,7 +840,7 @@ class My_WC_AJAX {
 			wp_die( -1 );
 		}
 
-		$user_id  = absint( $_POST['user_id'] );
+		$user_id  = absint( wc_clean($_POST['user_id'] ));
 		$customer = new WC_Customer( $user_id );
 
 		if ( has_filter( 'woocommerce_found_customer_details' ) ) {
@@ -870,10 +870,10 @@ class My_WC_AJAX {
 		if ( ! isset( $_POST['order_id'] ) ) {
 			throw new Exception( __( 'Invalid order', 'woocommerce' ) );
 		}
-		$order_id = absint( wp_unslash( $_POST['order_id'] ) );
+		$order_id = absint( wc_clean(wp_unslash( $_POST['order_id'] ) ));
 
 		// If we passed through items it means we need to save first before adding a new one.
-		$items = ( ! empty( $_POST['items'] ) ) ? wp_unslash( $_POST['items'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$items = ( ! empty( $_POST['items'] ) ) ? wc_clean(wp_unslash( $_POST['items']) ) : ''; 
 		//print_r($_POST);die();
 		//$array = $_POST['data'];
 		//parse_str($_POST['data'], $array);
@@ -898,7 +898,7 @@ class My_WC_AJAX {
           //  }
             //$order->save();
 
-		$items_to_add = isset( $_POST['data'] ) ? array_filter( wp_unslash( (array) $_POST['data'] ) ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$items_to_add = isset( $_POST['data'] ) ? array_filter( wc_clean(wp_unslash( (array) $_POST['data'] ) )) : array();
 
 		try {
 			$response = self::maybe_add_order_item( $order_id, $items, $items_to_add );
@@ -1062,7 +1062,7 @@ class My_WC_AJAX {
 		$response = array();
 
 		try {
-			$order_id = isset( $_POST['order_id'] ) ? absint( $_POST['order_id'] ) : 0;
+			$order_id = isset( $_POST['order_id'] ) ? absint( wc_clean($_POST['order_id']) ) : 0;
 			$order    = wc_get_order( $order_id );
 
 			if ( ! $order ) {
@@ -1124,7 +1124,7 @@ class My_WC_AJAX {
 		$response = array();
 
 		try {
-			$order_id = isset( $_POST['order_id'] ) ? absint( $_POST['order_id'] ) : 0;
+			$order_id = isset( $_POST['order_id'] ) ? absint( wc_clean($_POST['order_id'] )) : 0;
 			$order    = wc_get_order( $order_id );
 
 			if ( ! $order ) {
@@ -1166,14 +1166,14 @@ class My_WC_AJAX {
 		$response = array();
 
 		try {
-			$order_id = isset( $_POST['order_id'] ) ? absint( $_POST['order_id'] ) : 0;
+			$order_id = isset( $_POST['order_id'] ) ? absint( wc_clean($_POST['order_id'] ) ) : 0;
 			$order    = wc_get_order( $order_id );
 
 			if ( ! $order ) {
 				throw new Exception( __( 'Invalid order', 'woocommerce' ) );
 			}
 
-			$rate_id = isset( $_POST['rate_id'] ) ? absint( $_POST['rate_id'] ) : '';
+			$rate_id = isset( $_POST['rate_id'] ) ? absint( wc_clean($_POST['rate_id'] )) : '';
 
 			if ( ! $rate_id ) {
 				throw new Exception( __( 'Invalid rate', 'woocommerce' ) );
@@ -1213,7 +1213,7 @@ class My_WC_AJAX {
 		$response = array();
 
 		try {
-			$order_id           = isset( $_POST['order_id'] ) ? absint( $_POST['order_id'] ) : 0;
+			$order_id           = isset( $_POST['order_id'] ) ? absint( wc_clean($_POST['order_id'] )) : 0;
 			$order              = wc_get_order( $order_id );
 			$calculate_tax_args = array(
 				'country'  => isset( $_POST['country'] ) ? wc_strtoupper( wc_clean( wp_unslash( $_POST['country'] ) ) ) : '',
@@ -1231,7 +1231,7 @@ class My_WC_AJAX {
 			}
 
 			// Add user ID and/or email so validation for coupon limits works.
-			$user_id_arg    = isset( $_POST['user_id'] ) ? absint( $_POST['user_id'] ) : 0;
+			$user_id_arg    = isset( $_POST['user_id'] ) ? absint( wc_clean($_POST['user_id'] )) : 0;
 			$user_email_arg = isset( $_POST['user_email'] ) ? sanitize_email( wp_unslash( $_POST['user_email'] ) ) : '';
 
 			if ( $user_id_arg ) {
@@ -1241,7 +1241,7 @@ class My_WC_AJAX {
 				$order->set_billing_email( $user_email_arg );
 			}
 
-			$result = $order->apply_coupon( wc_format_coupon_code( wp_unslash( $_POST['coupon'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$result = $order->apply_coupon( wc_format_coupon_code( wc_clean(wp_unslash( $_POST['coupon'] ) )) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 			if ( is_wp_error( $result ) ) {
 				throw new Exception( html_entity_decode( wp_strip_all_tags( $result->get_error_message() ) ) );
@@ -1276,7 +1276,7 @@ class My_WC_AJAX {
 		$response = array();
 
 		try {
-			$order_id           = isset( $_POST['order_id'] ) ? absint( $_POST['order_id'] ) : 0;
+			$order_id           = isset( $_POST['order_id'] ) ? absint( wc_clean($_POST['order_id'] )) : 0;
 			$order              = wc_get_order( $order_id );
 			$calculate_tax_args = array(
 				'country'  => isset( $_POST['country'] ) ? wc_strtoupper( wc_clean( wp_unslash( $_POST['country'] ) ) ) : '',
@@ -1293,7 +1293,7 @@ class My_WC_AJAX {
 				throw new Exception( __( 'Invalid coupon', 'woocommerce' ) );
 			}
 
-			$order->remove_coupon( wc_format_coupon_code( wp_unslash( $_POST['coupon'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$order->remove_coupon( wc_format_coupon_code( wc_clean( wp_unslash( $_POST['coupon'] )) ) );
 			$order->calculate_taxes( $calculate_tax_args );
 			$order->calculate_totals( false );
 
@@ -1316,7 +1316,7 @@ class My_WC_AJAX {
 	public static function remove_order_item() {
 		check_ajax_referer( 'order-item', 'security' );
 
-		if ( ! current_user_can( 'edit_shop_orders' ) || ! isset( $_POST['order_id'], $_POST['order_item_ids'] ) ) {
+		if ( ! current_user_can( 'edit_shop_orders' ) || ! isset( $_POST['order_id'], wc_clean($_POST['order_item_ids'] ) )) {
 			wp_die( -1 );
 		}
 
@@ -1334,8 +1334,8 @@ class My_WC_AJAX {
 				throw new Exception( __( 'Invalid items', 'woocommerce' ) );
 			}
 
-			$order_item_ids     = wp_unslash( $_POST['order_item_ids'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-			$items              = ( ! empty( $_POST['items'] ) ) ? wp_unslash( $_POST['items'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$order_item_ids     = wc_clean(wp_unslash( $_POST['order_item_ids'] )); 
+			$items              = ( ! empty( $_POST['items'] ) ) ? wc_clean(wp_unslash( $_POST['items'] )) : '';
 			$calculate_tax_args = array(
 				'country'  => isset( $_POST['country'] ) ? wc_strtoupper( wc_clean( wp_unslash( $_POST['country'] ) ) ) : '',
 				'state'    => isset( $_POST['state'] ) ? wc_strtoupper( wc_clean( wp_unslash( $_POST['state'] ) ) ) : '',
@@ -1432,8 +1432,8 @@ class My_WC_AJAX {
 		$response = array();
 
 		try {
-			$order_id = absint( $_POST['order_id'] );
-			$rate_id  = absint( $_POST['rate_id'] );
+			$order_id = absint( wc_clean($_POST['order_id'] ));
+			$rate_id  = absint( wc_clean($_POST['rate_id'] ));
 
 			$order = wc_get_order( $order_id );
 			if ( ! $order->is_editable() ) {
@@ -1467,7 +1467,7 @@ class My_WC_AJAX {
 			wp_die( -1 );
 		}
 
-		$order_id           = absint( $_POST['order_id'] );
+		$order_id           = absint( wc_clean($_POST['order_id'] ));
 		$calculate_tax_args = array(
 			'country'  => isset( $_POST['country'] ) ? wc_strtoupper( wc_clean( wp_unslash( $_POST['country'] ) ) ) : '',
 			'state'    => isset( $_POST['state'] ) ? wc_strtoupper( wc_clean( wp_unslash( $_POST['state'] ) ) ) : '',
@@ -1477,7 +1477,7 @@ class My_WC_AJAX {
 
 		// Parse the jQuery serialized items.
 		$items = array();
-		parse_str( wp_unslash( $_POST['items'] ), $items ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		parse_str( wc_clean(wp_unslash( $_POST['items'] )), $items ); 
 
 		// Save order items first.
 		wc_save_order_items( $order_id, $items );
@@ -1502,18 +1502,18 @@ class My_WC_AJAX {
 		}
 
 		if ( isset( $_POST['order_id'], $_POST['items'] ) ) {
-			$order_id = absint( $_POST['order_id'] );
+			$order_id = absint( wc_clean($_POST['order_id'] ));
 
 			// Parse the jQuery serialized items.
 			$items = array();
-			parse_str( wp_unslash( $_POST['items'] ), $items ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			parse_str( wc_clean(wp_unslash( $_POST['items']) ), $items ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 			// Save order items.
 			wc_save_order_items( $order_id, $items );
 
 			// Return HTML items.
 			$order = wc_get_order( $order_id );
-			parse_str($_POST['items'], $array);
+			parse_str(wc_clean($_POST['items']), $array);
 			//echo $array['purpose_44'];
 			
 			foreach ( $order->get_items() as $item_id => $item ) {
@@ -1593,7 +1593,7 @@ class My_WC_AJAX {
 		}
 
 		// Return HTML items.
-		$order_id = absint( $_POST['order_id'] );
+		$order_id = absint( wc_clean($_POST['order_id'] ));
 		$order    = wc_get_order( $order_id );
 		include __DIR__ . '/admin/meta-boxes/views/html-order-items.php';
 		wp_die();
@@ -1609,8 +1609,8 @@ class My_WC_AJAX {
 			wp_die( -1 );
 		}
 
-		$post_id   = absint( $_POST['post_id'] );
-		$note      = wp_kses_post( trim( wp_unslash( $_POST['note'] ) ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$post_id   = absint( wc_clean($_POST['post_id'] ));
+		$note      = wp_kses_post( trim( wc_clean(wp_unslash( $_POST['note'] ) )) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$note_type = wc_clean( wp_unslash( $_POST['note_type'] ) );
 
 		$is_customer_note = ( 'customer' === $note_type ) ? 1 : 0;
@@ -3212,4 +3212,4 @@ class My_WC_AJAX {
 	}
 }
 
-My_WC_AJAX::init();
+INV_WC_AJAX::init();

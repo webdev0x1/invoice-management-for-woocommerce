@@ -214,7 +214,7 @@ class WC_Meta_Box_Product_Data {
 	 * @return array
 	 */
 	private static function prepare_children() {
-		return isset( $_POST['grouped_products'] ) ? array_filter( array_map( 'intval', (array) $_POST['grouped_products'] ) ) : array(); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		return isset( $_POST['grouped_products'] ) ? array_filter( array_map( 'intval', (array) wc_clean($_POST['grouped_products']) ) ) : array(); 
 	}
 
 	/**
@@ -228,7 +228,7 @@ class WC_Meta_Box_Product_Data {
 		$attributes = array();
 
 		if ( ! $data ) {
-			$data = stripslashes_deep( $_POST ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$data = stripslashes_deep( wc_clean($_POST) );
 		}
 
 		if ( isset( $data['attribute_names'], $data['attribute_values'] ) ) {
@@ -295,9 +295,9 @@ class WC_Meta_Box_Product_Data {
 					$attribute_key = sanitize_title( $attribute->get_name() );
 
 					if ( ! is_null( $index ) ) {
-						$value = isset( $_POST[ $key_prefix . $attribute_key ][ $index ] ) ? wp_unslash( $_POST[ $key_prefix . $attribute_key ][ $index ] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+						$value = isset( $_POST[ $key_prefix . $attribute_key ][ $index ] ) ? sanitize_text_field(wp_unslash($_POST[ $key_prefix . $attribute_key ][ $index ] )) : '';
 					} else {
-						$value = isset( $_POST[ $key_prefix . $attribute_key ] ) ? wp_unslash( $_POST[ $key_prefix . $attribute_key ] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+						$value = isset( $_POST[ $key_prefix . $attribute_key ] ) ? sanitize_text_field(wp_unslash($_POST[ $key_prefix . $attribute_key ] )) : '';
 					}
 
 					if ( $attribute->is_taxonomy() ) {
@@ -332,11 +332,11 @@ class WC_Meta_Box_Product_Data {
 
 		// Handle stock changes.
 		if ( isset( $_POST['_stock'] ) ) {
-			if ( isset( $_POST['_original_stock'] ) && wc_stock_amount( $product->get_stock_quantity( 'edit' ) ) !== wc_stock_amount( wp_unslash( $_POST['_original_stock'] ) ) ) {
+			if ( isset( $_POST['_original_stock'] ) && wc_stock_amount( $product->get_stock_quantity( 'edit' ) ) !== wc_stock_amount( sanitize_text_field(wp_unslash( $_POST['_original_stock'] )) ) ) {
 				/* translators: 1: product ID 2: quantity in stock */
 				WC_Admin_Meta_Boxes::add_error( sprintf( __( 'The stock has not been updated because the value has changed since editing. Product %1$d has %2$d units in stock.', 'woocommerce' ), $product->get_id(), $product->get_stock_quantity( 'edit' ) ) );
 			} else {
-				$stock = wc_stock_amount( wp_unslash( $_POST['_stock'] ) );
+				$stock = wc_stock_amount( sanitize_text_field(wp_unslash( $_POST['_stock'] )) );
 			}
 		}
 
@@ -346,58 +346,58 @@ class WC_Meta_Box_Product_Data {
 
 		// Force date from to beginning of day.
 		if ( isset( $_POST['_sale_price_dates_from'] ) ) {
-			$date_on_sale_from = wc_clean( wp_unslash( $_POST['_sale_price_dates_from'] ) );
+			$date_on_sale_from = wc_clean(wp_unslash( $_POST['_sale_price_dates_from'] ) );
 
 			if ( ! empty( $date_on_sale_from ) ) {
-				$date_on_sale_from = date( 'Y-m-d 00:00:00', strtotime( $date_on_sale_from ) ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+				$date_on_sale_from = date( 'Y-m-d 00:00:00', strtotime( $date_on_sale_from ) ); 
 			}
 		}
 
 		// Force date to to the end of the day.
 		if ( isset( $_POST['_sale_price_dates_to'] ) ) {
-			$date_on_sale_to = wc_clean( wp_unslash( $_POST['_sale_price_dates_to'] ) );
+			$date_on_sale_to = wc_clean(wp_unslash( $_POST['_sale_price_dates_to'] ) );
 
 			if ( ! empty( $date_on_sale_to ) ) {
-				$date_on_sale_to = date( 'Y-m-d 23:59:59', strtotime( $date_on_sale_to ) ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+				$date_on_sale_to = date( 'Y-m-d 23:59:59', strtotime( $date_on_sale_to ) );
 			}
 		}
 
 		$errors = $product->set_props(
 			array(
-				'sku'                => isset( $_POST['_sku'] ) ? wc_clean( wp_unslash( $_POST['_sku'] ) ) : null,
-				'purchase_note'      => isset( $_POST['_purchase_note'] ) ? wp_kses_post( wp_unslash( $_POST['_purchase_note'] ) ) : '',
+				'sku'                => isset( $_POST['_sku'] ) ? wc_clean(wp_unslash( $_POST['_sku'] ) ) : null,
+				'purchase_note'      => isset( $_POST['_purchase_note'] ) ? wp_kses_post( sanitize_text_field(wp_unslash( $_POST['_purchase_note'] ) )) : '',
 				'downloadable'       => isset( $_POST['_downloadable'] ),
 				'virtual'            => isset( $_POST['_virtual'] ),
 				'featured'           => isset( $_POST['_featured'] ),
-				'catalog_visibility' => isset( $_POST['_visibility'] ) ? wc_clean( wp_unslash( $_POST['_visibility'] ) ) : null,
-				'tax_status'         => isset( $_POST['_tax_status'] ) ? wc_clean( wp_unslash( $_POST['_tax_status'] ) ) : null,
+				'catalog_visibility' => isset( $_POST['_visibility'] ) ? wc_clean(wp_unslash( $_POST['_visibility'] ) ) : null,
+				'tax_status'         => isset( $_POST['_tax_status'] ) ? wc_clean(wp_unslash( $_POST['_tax_status'] ) ) : null,
 				'tax_class'          => isset( $_POST['_tax_class'] ) ? sanitize_title( wp_unslash( $_POST['_tax_class'] ) ) : null,
-				'weight'             => isset( $_POST['_weight'] ) ? wc_clean( wp_unslash( $_POST['_weight'] ) ) : null,
-				'length'             => isset( $_POST['_length'] ) ? wc_clean( wp_unslash( $_POST['_length'] ) ) : null,
-				'width'              => isset( $_POST['_width'] ) ? wc_clean( wp_unslash( $_POST['_width'] ) ) : null,
-				'height'             => isset( $_POST['_height'] ) ? wc_clean( wp_unslash( $_POST['_height'] ) ) : null,
-				'shipping_class_id'  => isset( $_POST['product_shipping_class'] ) ? absint( wp_unslash( $_POST['product_shipping_class'] ) ) : null,
+				'weight'             => isset( $_POST['_weight'] ) ? wc_clean(wp_unslash( $_POST['_weight'] ) ) : null,
+				'length'             => isset( $_POST['_length'] ) ? wc_clean(wp_unslash( $_POST['_length'] ) ) : null,
+				'width'              => isset( $_POST['_width'] ) ? wc_clean(wp_unslash( $_POST['_width'] ) ) : null,
+				'height'             => isset( $_POST['_height'] ) ? wc_clean(wp_unslash( $_POST['_height'] ) ) : null,
+				'shipping_class_id'  => isset( $_POST['product_shipping_class'] ) ? absint(sanitize_text_field(wp_unslash( $_POST['product_shipping_class'] )) ) : null,
 				'sold_individually'  => ! empty( $_POST['_sold_individually'] ),
-				'upsell_ids'         => isset( $_POST['upsell_ids'] ) ? array_map( 'intval', (array) wp_unslash( $_POST['upsell_ids'] ) ) : array(),
-				'cross_sell_ids'     => isset( $_POST['crosssell_ids'] ) ? array_map( 'intval', (array) wp_unslash( $_POST['crosssell_ids'] ) ) : array(),
-				'regular_price'      => isset( $_POST['_regular_price'] ) ? wc_clean( wp_unslash( $_POST['_regular_price'] ) ) : null,
-				'sale_price'         => isset( $_POST['_sale_price'] ) ? wc_clean( wp_unslash( $_POST['_sale_price'] ) ) : null,
+				'upsell_ids'         => isset( $_POST['upsell_ids'] ) ? array_map( 'intval', (array) sanitize_text_field(wp_unslash( $_POST['upsell_ids'] )) ) : array(),
+				'cross_sell_ids'     => isset( $_POST['crosssell_ids'] ) ? array_map( 'intval', (array) sanitize_text_field(wp_unslash( $_POST['crosssell_ids'] )) ) : array(),
+				'regular_price'      => isset( $_POST['_regular_price'] ) ? wc_clean( sanitize_text_field( wp_unslash( $_POST['_regular_price'] ) )) : null,
+				'sale_price'         => isset( $_POST['_sale_price'] ) ? wc_clean( sanitize_text_field( wp_unslash( $_POST['_sale_price'] ) )) : null,
 				'date_on_sale_from'  => $date_on_sale_from,
 				'date_on_sale_to'    => $date_on_sale_to,
 				'manage_stock'       => ! empty( $_POST['_manage_stock'] ),
 				'backorders'         => isset( $_POST['_backorders'] ) ? wc_clean( wp_unslash( $_POST['_backorders'] ) ) : null,
 				'stock_status'       => isset( $_POST['_stock_status'] ) ? wc_clean( wp_unslash( $_POST['_stock_status'] ) ) : null,
 				'stock_quantity'     => $stock,
-				'low_stock_amount'   => isset( $_POST['_low_stock_amount'] ) && '' !== $_POST['_low_stock_amount'] ? wc_stock_amount( wp_unslash( $_POST['_low_stock_amount'] ) ) : '',
-				'download_limit'     => isset( $_POST['_download_limit'] ) && '' !== $_POST['_download_limit'] ? absint( wp_unslash( $_POST['_download_limit'] ) ) : '',
-				'download_expiry'    => isset( $_POST['_download_expiry'] ) && '' !== $_POST['_download_expiry'] ? absint( wp_unslash( $_POST['_download_expiry'] ) ) : '',
+				'low_stock_amount'   => isset( $_POST['_low_stock_amount'] ) && '' !== $_POST['_low_stock_amount'] ? wc_stock_amount( sanitize_text_field(wp_unslash( $_POST['_low_stock_amount'] ) )) : '',
+				'download_limit'     => isset( $_POST['_download_limit'] ) && '' !== $_POST['_download_limit'] ? absint( sanitize_text_field(wp_unslash( $_POST['_download_limit'] ) )) : '',
+				'download_expiry'    => isset( $_POST['_download_expiry'] ) && '' !== $_POST['_download_expiry'] ? absint( sanitize_text_field(wp_unslash( $_POST['_download_expiry'] ) )) : '',
 				// Those are sanitized inside prepare_downloads.
 				'downloads'          => self::prepare_downloads(
-					isset( $_POST['_wc_file_names'] ) ? wp_unslash( $_POST['_wc_file_names'] ) : array(), // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-					isset( $_POST['_wc_file_urls'] ) ? wp_unslash( $_POST['_wc_file_urls'] ) : array(), // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-					isset( $_POST['_wc_file_hashes'] ) ? wp_unslash( $_POST['_wc_file_hashes'] ) : array() // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+					isset( $_POST['_wc_file_names'] ) ? sanitize_text_field( wp_unslash( $_POST['_wc_file_names'] )) : array(), 
+					isset( $_POST['_wc_file_urls'] ) ? sanitize_text_field (wp_unslash( $_POST['_wc_file_urls'] )) : array(), 
+					isset( $_POST['_wc_file_hashes'] ) ? sanitize_text_field (wp_unslash( $_POST['_wc_file_hashes'] )) : array() 
 				),
-				'product_url'        => isset( $_POST['_product_url'] ) ? esc_url_raw( wp_unslash( $_POST['_product_url'] ) ) : '',
+				'product_url'        => isset( $_POST['_product_url'] ) ? esc_url_raw( sanitize_text_field( wp_unslash( $_POST['_product_url'] )) ) : '',
 				'button_text'        => isset( $_POST['_button_text'] ) ? wc_clean( wp_unslash( $_POST['_button_text'] ) ) : '',
 				'children'           => 'grouped' === $product_type ? self::prepare_children() : null,
 				'reviews_allowed'    => ! empty( $_POST['comment_status'] ) && 'open' === $_POST['comment_status'],
@@ -443,7 +443,7 @@ class WC_Meta_Box_Product_Data {
 			$parent->set_default_attributes( self::prepare_set_attributes( $parent->get_attributes(), 'default_attribute_' ) );
 			$parent->save();
 
-			$max_loop   = max( array_keys( wp_unslash( $_POST['variable_post_id'] ) ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$max_loop   = max( array_keys( wc_clean(wp_unslash( $_POST['variable_post_id'] )) ) ); 
 			$data_store = $parent->get_data_store();
 			$data_store->sort_all_product_variations( $parent->get_id() );
 
@@ -452,7 +452,7 @@ class WC_Meta_Box_Product_Data {
 				if ( ! isset( $_POST['variable_post_id'][ $i ] ) ) {
 					continue;
 				}
-				$variation_id = absint( $_POST['variable_post_id'][ $i ] );
+				$variation_id = absint( wc_clean($_POST['variable_post_id'][ $i ] ));
 				$variation    = wc_get_product_object( 'variation', $variation_id );
 				$stock        = null;
 
@@ -462,7 +462,7 @@ class WC_Meta_Box_Product_Data {
 						/* translators: 1: product ID 2: quantity in stock */
 						WC_Admin_Meta_Boxes::add_error( sprintf( __( 'The stock has not been updated because the value has changed since editing. Product %1$d has %2$d units in stock.', 'woocommerce' ), $variation->get_id(), $variation->get_stock_quantity( 'edit' ) ) );
 					} else {
-						$stock = wc_stock_amount( wp_unslash( $_POST['variable_stock'][ $i ] ) );
+						$stock = wc_stock_amount( sanitize_text_field(wp_unslash( $_POST['variable_stock'][ $i ] ) ));
 					}
 				}
 
@@ -498,18 +498,18 @@ class WC_Meta_Box_Product_Data {
 						'downloadable'      => isset( $_POST['variable_is_downloadable'][ $i ] ),
 						'date_on_sale_from' => $date_on_sale_from,
 						'date_on_sale_to'   => $date_on_sale_to,
-						'description'       => isset( $_POST['variable_description'][ $i ] ) ? wp_kses_post( wp_unslash( $_POST['variable_description'][ $i ] ) ) : null,
+						'description'       => isset( $_POST['variable_description'][ $i ] ) ? wp_kses_post( wc_clean(wp_unslash( $_POST['variable_description'][ $i ] ) )) : null,
 						'download_limit'    => isset( $_POST['variable_download_limit'][ $i ] ) ? wc_clean( wp_unslash( $_POST['variable_download_limit'][ $i ] ) ) : null,
 						'download_expiry'   => isset( $_POST['variable_download_expiry'][ $i ] ) ? wc_clean( wp_unslash( $_POST['variable_download_expiry'][ $i ] ) ) : null,
 						// Those are sanitized inside prepare_downloads.
 						'downloads'         => self::prepare_downloads(
-							isset( $_POST['_wc_variation_file_names'][ $variation_id ] ) ? wp_unslash( $_POST['_wc_variation_file_names'][ $variation_id ] ) : array(), // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-							isset( $_POST['_wc_variation_file_urls'][ $variation_id ] ) ? wp_unslash( $_POST['_wc_variation_file_urls'][ $variation_id ] ) : array(), // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-							isset( $_POST['_wc_variation_file_hashes'][ $variation_id ] ) ? wp_unslash( $_POST['_wc_variation_file_hashes'][ $variation_id ] ) : array() // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+							isset( $_POST['_wc_variation_file_names'][ $variation_id ] ) ? wc_clean( wp_unslash( $_POST['_wc_variation_file_names'][ $variation_id ] )) : array(), 
+							isset( $_POST['_wc_variation_file_urls'][ $variation_id ] ) ? wc_clean( wp_unslash( $_POST['_wc_variation_file_urls'][ $variation_id ] )) : array(), 
+							isset( $_POST['_wc_variation_file_hashes'][ $variation_id ] ) ? wc_clean( wp_unslash( $_POST['_wc_variation_file_hashes'][ $variation_id ] )) : array()
 						),
 						'manage_stock'      => isset( $_POST['variable_manage_stock'][ $i ] ),
 						'stock_quantity'    => $stock,
-						'low_stock_amount'  => isset( $_POST['variable_low_stock_amount'][ $i ] ) && '' !== $_POST['variable_low_stock_amount'][ $i ] ? wc_stock_amount( wp_unslash( $_POST['variable_low_stock_amount'][ $i ] ) ) : '',
+						'low_stock_amount'  => isset( $_POST['variable_low_stock_amount'][ $i ] ) && '' !== $_POST['variable_low_stock_amount'][ $i ] ? wc_stock_amount( wc_clean(wp_unslash( $_POST['variable_low_stock_amount'][ $i ] ) )) : '',
 						'backorders'        => isset( $_POST['variable_backorders'], $_POST['variable_backorders'][ $i ] ) ? wc_clean( wp_unslash( $_POST['variable_backorders'][ $i ] ) ) : null,
 						'stock_status'      => isset( $_POST['variable_stock_status'][ $i ] ) ? wc_clean( wp_unslash( $_POST['variable_stock_status'][ $i ] ) ) : null,
 						'image_id'          => isset( $_POST['upload_image_id'][ $i ] ) ? wc_clean( wp_unslash( $_POST['upload_image_id'][ $i ] ) ) : null,

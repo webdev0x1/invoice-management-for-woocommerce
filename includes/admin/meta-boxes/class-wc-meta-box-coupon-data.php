@@ -362,28 +362,28 @@ class WC_Meta_Box_Coupon_Data {
 			WC_Admin_Meta_Boxes::add_error( __( 'Coupon code already exists - customers will use the latest coupon with this code.', 'woocommerce' ) );
 		}
 
-		$product_categories         = isset( $_POST['product_categories'] ) ? (array) $_POST['product_categories'] : array();
-		$exclude_product_categories = isset( $_POST['exclude_product_categories'] ) ? (array) $_POST['exclude_product_categories'] : array();
+		$product_categories         = isset( $_POST['product_categories'] ) ? (array) wc_clean($_POST['product_categories']) : array();
+		$exclude_product_categories = isset( $_POST['exclude_product_categories'] ) ? (array) wc_clean($_POST['exclude_product_categories']) : array();
 
 		$coupon = new WC_Coupon( $post_id );
 		$coupon->set_props(
 			array(
 				'code'                        => $post->post_title,
 				'discount_type'               => wc_clean( $_POST['discount_type'] ),
-				'amount'                      => wc_format_decimal( $_POST['coupon_amount'] ),
+				'amount'                      => wc_format_decimal( wc_clean($_POST['coupon_amount'] )),
 				'date_expires'                => wc_clean( $_POST['expiry_date'] ),
 				'individual_use'              => isset( $_POST['individual_use'] ),
-				'product_ids'                 => isset( $_POST['product_ids'] ) ? array_filter( array_map( 'intval', (array) $_POST['product_ids'] ) ) : array(),
-				'excluded_product_ids'        => isset( $_POST['exclude_product_ids'] ) ? array_filter( array_map( 'intval', (array) $_POST['exclude_product_ids'] ) ) : array(),
-				'usage_limit'                 => absint( $_POST['usage_limit'] ),
-				'usage_limit_per_user'        => absint( $_POST['usage_limit_per_user'] ),
-				'limit_usage_to_x_items'      => absint( $_POST['limit_usage_to_x_items'] ),
+				'product_ids'                 => isset( $_POST['product_ids'] ) ? array_filter( array_map( 'intval', (array) wc_clean($_POST['product_ids'] )) ) : array(),
+				'excluded_product_ids'        => isset( $_POST['exclude_product_ids'] ) ? array_filter( array_map( 'intval', (array) wc_clean($_POST['exclude_product_ids'] )) ) : array(),
+				'usage_limit'                 => absint( wc_clean($_POST['usage_limit'] )),
+				'usage_limit_per_user'        => absint( wc_clean($_POST['usage_limit_per_user'] )),
+				'limit_usage_to_x_items'      => absint( wc_clean($_POST['limit_usage_to_x_items']) ),
 				'free_shipping'               => isset( $_POST['free_shipping'] ),
 				'product_categories'          => array_filter( array_map( 'intval', $product_categories ) ),
 				'excluded_product_categories' => array_filter( array_map( 'intval', $exclude_product_categories ) ),
 				'exclude_sale_items'          => isset( $_POST['exclude_sale_items'] ),
-				'minimum_amount'              => wc_format_decimal( $_POST['minimum_amount'] ),
-				'maximum_amount'              => wc_format_decimal( $_POST['maximum_amount'] ),
+				'minimum_amount'              => wc_format_decimal( wc_clean($_POST['minimum_amount'] )),
+				'maximum_amount'              => wc_format_decimal( wc_clean($_POST['maximum_amount'] )),
 				'email_restrictions'          => array_filter( array_map( 'trim', explode( ',', wc_clean( $_POST['customer_email'] ) ) ) ),
 			)
 		);

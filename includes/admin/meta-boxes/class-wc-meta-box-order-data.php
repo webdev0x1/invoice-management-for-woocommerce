@@ -543,7 +543,7 @@ class WC_Meta_Box_Order_Data {
 		}
 
 		// Update customer.
-		$customer_id = isset( $_POST['customer_user'] ) ? absint( $_POST['customer_user'] ) : 0;
+		$customer_id = isset( $_POST['customer_user'] ) ? absint( wc_clean($_POST['customer_user'] )) : 0;
 		if ( $customer_id !== $order->get_customer_id() ) {
 			$props['customer_id'] = $customer_id;
 		}
@@ -608,7 +608,7 @@ class WC_Meta_Box_Order_Data {
 		if ( empty( $_POST['order_date'] ) ) {
 			$date = time();
 		} else {
-			$date = gmdate( 'Y-m-d H:i:s', strtotime( $_POST['order_date'] . ' ' . (int) $_POST['order_date_hour'] . ':' . (int) $_POST['order_date_minute'] . ':' . (int) $_POST['order_date_second'] ) );
+			$date = gmdate( 'Y-m-d H:i:s', strtotime( wc_clean($_POST['order_date']) . ' ' . (int) wc_clean($_POST['order_date_hour']) . ':' . (int) wc_clean($_POST['order_date_minute']) . ':' . (int) wc_clean($_POST['order_date_second']) ) );
 		}
 
 		$props['date_created'] = $date;

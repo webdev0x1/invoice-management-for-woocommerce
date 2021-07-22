@@ -112,7 +112,7 @@ if (!class_exists('INV_EMPYE_editor')) {
            add_action( 'woocommerce_before_order_itemmeta_custom_supplier_name', array( $this, 'add_order_item_custom_field_supplier_name'), 10, 2 );
            add_action( 'woocommerce_before_order_itemmeta_custom_supplier_address', array( $this, 'add_order_item_custom_field_supplier_address'), 10, 2 );
            add_action( 'woocommerce_before_order_itemmeta_custom_supplier_price', array( $this, 'add_order_item_custom_field_supplier_price'), 10, 2 );
-           add_action( 'woocommerce_process_shop_order_meta', 'My_Custom_WC_Meta_Box_Order_Items::save', 10 );
+           add_action( 'woocommerce_process_shop_order_meta', 'INV_WC_Meta_Box_Order_Items::save', 10 );
            add_action( 'woocommerce_init', array( $this, 'wpse8170_woocommerce_init' ) );
            add_action('save_post_shop_order', array( $this,  'save_order_item_custom_field', 10000, 2 ));
            add_action('woocommerce_ajax_add_order_item_meta', array( $this,  'my_add_order_item_meta', 10000, 2 ));
@@ -605,11 +605,11 @@ if (!class_exists('INV_EMPYE_editor')) {
             if( empty( $document ) || empty( $data ) ) return;
             $data = $this->get_current_values_for_document_po( $document, $data );
             ?>
-            <div class="wcpdf-data-fields" data-document="<?= $document->get_type(); ?>" data-order_id="<?php echo WCX_Order::get_id( $document->order ); ?>">
+            <div class="wcpdf-data-fields" data-document="<?php echo $document->get_type(); ?>" data-order_id="<?php echo WCX_Order::get_id( $document->order ); ?>">
                 <section class="wcpdf-data-fields-section number-date">
                     <!-- Title -->
                     <h4>
-                        <?= $document->get_title(); ?>
+                        <?php echo $document->get_title(); ?>
                         <?php if( $document->exists() && ( isset( $data['number'] ) || isset( $data['date'] ) ) ) : ?>
                             <span class="wpo-wcpdf-edit-date-number dashicons dashicons-edit"></span>
                             <span class="wpo-wcpdf-delete-document dashicons dashicons-trash" data-nonce="<?php echo wp_create_nonce( "wpo_wcpdf_delete_document" ); ?>"></span>
@@ -621,21 +621,21 @@ if (!class_exists('INV_EMPYE_editor')) {
                     <div class="read-only">
                         <?php if( $document->exists() ) : ?>
                             <?php if( isset( $data['number'] ) ) : ?>
-                            <div class="<?= $document->get_type(); ?>-number">
-                                <p class="form-field <?= $data['number']['name']; ?>_field">	
+                            <div class="<?php $document->get_type(); ?>-number">
+                                <p class="form-field <?php echo $data['number']['name']; ?>_field">	
                                     <p>
-                                        <span><strong><?= $data['number']['label']; ?></strong></span>
-                                        <span><?= $data['number']['formatted']; ?></span>
+                                        <span><strong><?php echo $data['number']['label']; ?></strong></span>
+                                        <span><?php $data['number']['formatted']; ?></span>
                                     </p>
                                 </p>
                             </div>
                             <?php endif; ?>
                             <?php if( isset( $data['date'] ) ) : ?>
-                            <div class="<?= $document->get_type(); ?>-date">
+                            <div class="<?php echo $document->get_type(); ?>-date">
                                 <p class="form-field form-field-wide">
                                     <p>
-                                        <span><strong><?= $data['date']['label']; ?></strong></span>
-                                        <span><?= $data['date']['formatted']; ?></span>
+                                        <span><strong><?php echo $data['date']['label']; ?></strong></span>
+                                        <span><?php $data['date']['formatted']; ?></span>
                                     </p>
                                 </p>
                             </div>
@@ -649,15 +649,15 @@ if (!class_exists('INV_EMPYE_editor')) {
                     <!-- Editable -->
                     <div class="editable">
                         <?php if( isset( $data['number'] ) ) : ?>
-                        <p class="form-field <?= $data['number']['name']; ?>_field ">
-                            <label for="<?= $data['number']['name']; ?>"><?= $data['number']['label']; ?></label>
-                            <input type="text" class="short" style="" name="<?= $data['number']['name']; ?>" id="<?= $data['number']['name']; ?>" value="<?= $data['number']['plain']; ?>" disabled="disabled" > (<?= __( 'unformatted!', 'inv_empye' ) ?>)
+                        <p class="form-field <?php echo $data['number']['name']; ?>_field ">
+                            <label for="<?php echo $data['number']['name']; ?>"><?php echo $data['number']['label']; ?></label>
+                            <input type="text" class="short" style="" name="<?php echo $data['number']['name']; ?>" id="<?php echo  $data['number']['name']; ?>" value="<?php echo  $data['number']['plain']; ?>" disabled="disabled" > (<?php echo __( 'unformatted!', 'inv_empye' ) ?>)
                         </p>
                         <?php endif; ?>
                         <?php if( isset( $data['date'] ) ) : ?>
                         <p class="form-field form-field-wide">
-                            <label for="<?= $data['date']['name'] ?>[date]"><?= $data['date']['label']; ?></label>
-                            <input type="text" class="date-picker-field" name="<?= $data['date']['name'] ?>[date]" id="<?= $data['date']['name'] ?>[date]" maxlength="10" value="<?= $data['date']['date']; ?>" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" disabled="disabled"/>@<input type="number" class="hour" disabled="disabled" placeholder="<?php _e( 'h', 'woocommerce' ); ?>" name="<?= $data['date']['name']; ?>[hour]" id="<?= $data['date']['name']; ?>[hour]" min="0" max="23" size="2" value="<?= $data['date']['hour']; ?>" pattern="([01]?[0-9]{1}|2[0-3]{1})" />:<input type="number" class="minute" placeholder="<?php _e( 'm', 'woocommerce' ); ?>" name="<?= $data['date']['name']; ?>[minute]" id="<?= $data['date']['name']; ?>[minute]" min="0" max="59" size="2" value="<?= $data['date']['minute']; ?>" pattern="[0-5]{1}[0-9]{1}"  disabled="disabled" />
+                            <label for="<?php echo  $data['date']['name'] ?>[date]"><?php echo  $data['date']['label']; ?></label>
+                            <input type="text" class="date-picker-field" name="<?php echo  $data['date']['name'] ?>[date]" id="<?php echo  $data['date']['name'] ?>[date]" maxlength="10" value="<?php echo  $data['date']['date']; ?>" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" disabled="disabled"/>@<input type="number" class="hour" disabled="disabled" placeholder="<?php _e( 'h', 'woocommerce' ); ?>" name="<?php echo  $data['date']['name']; ?>[hour]" id="<?php echo  $data['date']['name']; ?>[hour]" min="0" max="23" size="2" value="<?php echo  $data['date']['hour']; ?>" pattern="([01]?[0-9]{1}|2[0-3]{1})" />:<input type="number" class="minute" placeholder="<?php _e( 'm', 'woocommerce' ); ?>" name="<?php echo  $data['date']['name']; ?>[minute]" id="<?php echo  $data['date']['name']; ?>[minute]" min="0" max="59" size="2" value="<?php echo  $data['date']['minute']; ?>" pattern="[0-5]{1}[0-9]{1}"  disabled="disabled" />
                         </p>
                         <?php endif; ?>
                     </div>
@@ -671,17 +671,17 @@ if (!class_exists('INV_EMPYE_editor')) {
                     <section class="wcpdf-data-fields-section notes">
                         <p class="form-field form-field-wide">
                             <div>
-                                <span><strong><?= $data['notes']['label']; ?></strong></span>
+                                <span><strong><?php echo $data['notes']['label']; ?></strong></span>
                                 <span class="wpo-wcpdf-edit-document-notes dashicons dashicons-edit"></span>
                             </div>
                             <!-- Read only -->
                             <div class="read-only">
-                                <p><?= $data['notes']['value']; ?></p>
+                                <p><?php echo $data['notes']['value']; ?></p>
                             </div>
                             <!-- Editable -->
                             <div class="editable">
                                 <p class="form-field form-field-wide">
-                                    <p><textarea name="<?= $data['notes']['name']; ?>" class="<?= $data['notes']['name']; ?>" cols="60" rows="5" disabled="disabled"><?= $data['notes']['value']; ?></textarea></p>
+                                    <p><textarea name="<?php echo $data['notes']['name']; ?>" class="<?php echo  $data['notes']['name']; ?>" cols="60" rows="5" disabled="disabled"><?php echo  $data['notes']['value']; ?></textarea></p>
                                 </p>
                             </div>
                         </p>

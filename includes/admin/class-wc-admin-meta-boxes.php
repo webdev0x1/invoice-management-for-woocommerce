@@ -12,9 +12,9 @@ use Automattic\Jetpack\Constants;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * My_WC_Admin_Meta_Boxes.
+ * INV_WC_Admin_Meta_Boxes.
  */
-class My_WC_Admin_Meta_Boxes {
+class INV_WC_Admin_Meta_Boxes {
 
 	/**
 	 * Is meta boxes saved once?
@@ -49,7 +49,7 @@ class My_WC_Admin_Meta_Boxes {
 		 *      Save order data - also updates status and sends out admin emails if needed. Last to show latest data.
 		 *      Save actions - sends out other emails. Last to show latest data.
 		 */
-		add_action( 'woocommerce_process_shop_order_meta', 'My_WC_Meta_Box_Order_Items::save', 10 );
+		add_action( 'woocommerce_process_shop_order_meta', 'INV_WC_Meta_Box_Order_Items::save', 10 );
 		add_action( 'woocommerce_process_shop_order_meta', 'WC_Meta_Box_Order_Downloads::save', 30, 2 );
 		add_action( 'woocommerce_process_shop_order_meta', 'WC_Meta_Box_Order_Data::save', 40 );
 		add_action( 'woocommerce_process_shop_order_meta', 'WC_Meta_Box_Order_Actions::save', 50, 2 );
@@ -123,7 +123,7 @@ class My_WC_Admin_Meta_Boxes {
 			$order_type_object = get_post_type_object( $type );
 			/* Translators: %s order type name. */
 			add_meta_box( 'woocommerce-order-data', sprintf( __( '%s data', 'woocommerce' ), $order_type_object->labels->singular_name ), 'WC_Meta_Box_Order_Data::output', $type, 'normal', 'high' );
-			add_meta_box( 'woocommerce-order-items', __( 'Items', 'woocommerce' ), 'My_WC_Meta_Box_Order_Items::output', $type, 'normal', 'high' );
+			add_meta_box( 'woocommerce-order-items', __( 'Items', 'woocommerce' ), 'INV_WC_Meta_Box_Order_Items::output', $type, 'normal', 'high' );
 			/* Translators: %s order type name. */
 			add_meta_box( 'woocommerce-order-notes', sprintf( __( '%s notes', 'woocommerce' ), $order_type_object->labels->singular_name ), 'WC_Meta_Box_Order_Notes::output', $type, 'side', 'default' );
 			add_meta_box( 'woocommerce-order-downloads', __( 'Downloadable product permissions', 'woocommerce' ) . wc_help_tip( __( 'Note: Permissions for order items will automatically be granted when the order status changes to processing/completed.', 'woocommerce' ) ), 'WC_Meta_Box_Order_Downloads::output', $type, 'normal', 'default' );
@@ -224,4 +224,4 @@ class My_WC_Admin_Meta_Boxes {
 	}
 }
 
-new My_WC_Admin_Meta_Boxes();
+new INV_WC_Admin_Meta_Boxes();

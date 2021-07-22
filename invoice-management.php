@@ -60,7 +60,7 @@ if (!class_exists('INV_EMPYE_Plugin')) {
 
     		$this->define('INV_EMPYE_ABSPATH', dirname(INV_EMPYE_PLUGIN_FILE) . '/');
     		$this->define('INV_EMPYE_PLUGIN_BASENAME', plugin_basename(INV_EMPYE_PLUGIN_FILE));
-    		$this->define('INV_EMPYE_PLUGIN_URL', plugins_url() . '/invoice-management/');
+    		$this->define('INV_EMPYE_PLUGIN_URL', __FILE__);
     		$this->define('INV_EMPYE_POST_TYPE', 'inv_supplier');
             $this->define('INV_EMPYE_TEXT_DOMAIN', 'inv_empye');
     	}
@@ -122,20 +122,20 @@ if (!class_exists('INV_EMPYE_Plugin')) {
         public function admin_style()
         {
             // Enqueue style files
-            wp_enqueue_style(INV_EMPYE_POST_TYPE . '_datatables-style', "//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css");
-            wp_enqueue_style(INV_EMPYE_POST_TYPE . '_admin-style', plugins_url() . "/invoice-management/assets/css/" . INV_EMPYE_POST_TYPE . "_style.css");
+            wp_enqueue_style(INV_EMPYE_POST_TYPE . '_datatables-style', __FILE__ . "/assets/css/jquery.dataTables.min.css");
+            wp_enqueue_style(INV_EMPYE_POST_TYPE . '_admin-style', __FILE__ . "/assets/css/" . INV_EMPYE_POST_TYPE . "_style.css");
 
             // Enqueue script files
-            wp_enqueue_script(INV_EMPYE_POST_TYPE . '_datatables-script', "//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js", array('jquery'));
-            // wp_enqueue_script(INV_EMPYE_POST_TYPE . '_admin-script', plugins_url() . "/invoice-management/assets/js/" . INV_EMPYE_POST_TYPE . "_script.js", array(INV_EMPYE_POST_TYPE . '_datatables-script'));
+            wp_enqueue_script(INV_EMPYE_POST_TYPE . '_datatables-script', __FILE__ . "/assets/js/jquery.dataTables.min.js", array('jquery'));
+            // wp_enqueue_script(INV_EMPYE_POST_TYPE . '_admin-script', __FILE__ . "/assets/js/" . INV_EMPYE_POST_TYPE . "_script.js", array(INV_EMPYE_POST_TYPE . '_datatables-script'));
             wp_enqueue_script(
 				'wpo-wcpdf',
-				plugins_url() . '/invoice-management/assets/js/order-script.js',
+				__FILE__ . '/assets/js/order-script.js',
 				array( 'jquery' ),
 				'0.0.1'
 			);
             wp_dequeue_script('wc-admin-order-meta-boxes');
-            wp_enqueue_script( 'wc-admin-order-meta-boxes', plugins_url() . '/invoice-management/assets/js/admin/meta-boxes-order.js', array( 'wc-admin-meta-boxes', 'wc-backbone-modal', 'selectWoo', 'wc-clipboard' ), '0.1.0' );
+            wp_enqueue_script( 'wc-admin-order-meta-boxes', __FILE__ . '/assets/js/admin/meta-boxes-order.js', array( 'wc-admin-meta-boxes', 'wc-backbone-modal', 'selectWoo', 'wc-clipboard' ), '0.1.0' );
 
 			wp_localize_script(
 				'wpo-wcpdf',
