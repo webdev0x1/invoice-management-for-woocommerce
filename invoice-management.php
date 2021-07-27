@@ -22,19 +22,21 @@ if (!defined('INV_EMPYE_PLUGIN_FILE')) {
 if (!class_exists('INV_EMPYE_Plugin')) {
     class INV_EMPYE_Plugin
     {
-        // +-------------------+
+        	// +-------------------+
 		// | CLASS CONSTRUCTOR |
 		// +-------------------+
 
 		public function __construct()
 		{
-            if (is_admin()) {
+            	if (is_admin()) {
 
                 $this->define_constants(); // Define plugin constants
-
+		
                 // Go out if Woocommerce is not installed…
                 if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
-                    add_action('admin_notices', array($this, 'show_woocommerce_notice'));
+			add_action('admin_notices', array($this, 'show_woocommerce_notice'));
+			add_filter( 'script_loader_src', array( $this, 'wpse47206_src') );
+	                add_filter( 'style_loader_src', array( $this,'wpse47206_src') );
                     return;
                 }
 
@@ -45,6 +47,15 @@ if (!class_exists('INV_EMPYE_Plugin')) {
 				$inv_notice->init();
             }
 		}
+
+
+
+
+	public function wpse47206_src( $url )
+	{
+//    		if( is_admin() ) return $url;
+		    return str_replace( site_url(), '', $url );
+	}
 
         // +---------------+
         // | CLASS METHODS |
@@ -122,20 +133,20 @@ if (!class_exists('INV_EMPYE_Plugin')) {
         public function admin_style()
         {
             // Enqueue style files
-            wp_enqueue_style(INV_EMPYE_POST_TYPE . '_datatables-style', __FILE__ . "/assets/css/jquery.dataTables.min.css");
-            wp_enqueue_style(INV_EMPYE_POST_TYPE . '_admin-style', __FILE__ . "/assets/css/" . INV_EMPYE_POST_TYPE . "_style.css");
+            wp_enqueue_style(INV_EMPYE_POST_TYPE . '_datatables-style', plugins_url("/invoice-management-for-woocommerce/assets/css/jquery.dataTables.min.css"), '1.1', true);
+            wp_enqueue_style(INV_EMPYE_POST_TYPE . '_admin-style', plugins_url("/invoice-management-for-woocommerce/assets/css/" . INV_EMPYE_POST_TYPE . "_style.css"),'1.1', true );
 
             // Enqueue script files
-            wp_enqueue_script(INV_EMPYE_POST_TYPE . '_datatables-script', __FILE__ . "/assets/js/jquery.dataTables.min.js", array('jquery'));
+            wp_enqueue_script(INV_EMPYE_POST_TYPE . '_datatables-script', plugins_url("/invoice-management-for-woocommerce/assets/js/jquery.dataTables.min.js"), array('jquery'), '1.1', true);
             // wp_enqueue_script(INV_EMPYE_POST_TYPE . '_admin-script', __FILE__ . "/assets/js/" . INV_EMPYE_POST_TYPE . "_script.js", array(INV_EMPYE_POST_TYPE . '_datatables-script'));
             wp_enqueue_script(
 				'wpo-wcpdf',
-				__FILE__ . '/assets/js/order-script.js',
+				plugins_url('/invoice-management-for-woocommerce/assets/js/order-script.js'),
 				array( 'jquery' ),
 				'0.0.1'
 			);
             wp_dequeue_script('wc-admin-order-meta-boxes');
-            wp_enqueue_script( 'wc-admin-order-meta-boxes', __FILE__ . '/assets/js/admin/meta-boxes-order.js', array( 'wc-admin-meta-boxes', 'wc-backbone-modal', 'selectWoo', 'wc-clipboard' ), '0.1.0' );
+            wp_enqueue_script( 'wc-admin-order-meta-boxes', plugins_url('/invoice-management-for-woocommerce/assets/js/admin/meta-boxes-order.js'), array( 'wc-admin-meta-boxes', 'wc-backbone-modal', 'selectWoo', 'wc-clipboard' ), '0.1.0' );
 
 			wp_localize_script(
 				'wpo-wcpdf',

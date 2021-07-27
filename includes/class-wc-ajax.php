@@ -485,7 +485,7 @@ class INV_WC_AJAX {
 		}
 
 		$data_store   = WC_Data_Store::load( 'product' );
-		$variation_id = $data_store->find_matching_product_variation( $variable_product, wc_clean(wp_unslash($_POST ) );
+		$variation_id = $data_store->find_matching_product_variation( $variable_product, wc_clean(wp_unslash($_POST ) ));
 		$variation    = $variation_id ? $variable_product->get_available_variation( $variation_id ) : false;
 		wp_send_json( $variation );
 		// phpcs:enable
@@ -1316,7 +1316,7 @@ class INV_WC_AJAX {
 	public static function remove_order_item() {
 		check_ajax_referer( 'order-item', 'security' );
 
-		if ( ! current_user_can( 'edit_shop_orders' ) || ! isset( $_POST['order_id'], wc_clean($_POST['order_item_ids'] ) )) {
+		if ( ! current_user_can( 'edit_shop_orders' ) || ! isset( $_POST['order_id'], $_POST['order_item_ids']  )) {
 			wp_die( -1 );
 		}
 

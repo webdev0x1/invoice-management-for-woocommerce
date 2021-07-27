@@ -259,7 +259,7 @@ if (!class_exists('INV_EMPYE_editor')) {
 
         public function remove_shop_order_meta_boxe() {
             remove_meta_box('woocommerce-order-items', 'shop_order', 'normal');
-            add_meta_box( 'woocommerce-order-items', __( 'Items', 'inv_empye' ), 'My_Custom_WC_Meta_Box_Order_Items::output', "shop_order", 'normal', 'high' );
+            add_meta_box( 'woocommerce-order-items', __( 'Items', 'inv_empye' ), 'INV_WC_Meta_Box_Order_Items::output', "shop_order", 'normal', 'high' );
         }
 
         public function add_order_item_custom_field_purpose( $item_id, $item ) {
