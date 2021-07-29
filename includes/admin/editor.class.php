@@ -378,11 +378,11 @@ if (!class_exists('INV_EMPYE_editor')) {
         }        
         
         public function supplier_order_item_headers(){
-            echo '<th class="" colspan="2" data-sort="string-ins">' . __( 'Supplier Name', 'woocommerce' ) .'</th>';
-            echo '<th class="" colspan="2" data-sort="string-ins">' . __( 'Supplier Address', 'woocommerce' ) .'</th>';
-            echo '<th class="" colspan="2" data-sort="string-ins">' . __( 'Usage (Gallons)', 'woocommerce' ) .'</th>';
-            echo '<th class="" colspan="2" data-sort="string-ins">' . __( 'Purpose', 'woocommerce' ) .'</th>';
-            echo '<th class="" colspan="2" data-sort="string-ins">' . __( 'Date of purchase', 'woocommerce' ) .'</th>';
+            echo esc_html('<th class="" colspan="2" data-sort="string-ins">' . __( 'Supplier Name', 'woocommerce' ) .'</th>');
+            echo esc_html('<th class="" colspan="2" data-sort="string-ins">' . __( 'Supplier Address', 'woocommerce' ) .'</th>');
+            echo esc_html('<th class="" colspan="2" data-sort="string-ins">' . __( 'Usage (Gallons)', 'woocommerce' ) .'</th>');
+            echo esc_html('<th class="" colspan="2" data-sort="string-ins">' . __( 'Purpose', 'woocommerce' ) .'</th>');
+            echo esc_html('<th class="" colspan="2" data-sort="string-ins">' . __( 'Date of purchase', 'woocommerce' ) .'</th>');
         }
         
         public function supplier_order_item_values( $_product, $item, $item_id ){
@@ -396,11 +396,11 @@ if (!class_exists('INV_EMPYE_editor')) {
             $address .=  get_post_meta($val, 'inv_empye_direct_email', true)."<br>";
             $address .=  get_post_meta($val, 'inv_empye_direct_phone', true)."<br>";
             
-            echo '<td colspan="1">' . get_the_title($val) . '<td>';
-            echo '<td colspan="1">' . $address . '<td>';
-            echo '<td colspan="1">' . $_product->get_weight() . '<td>';
-            echo '<td colspan="2"><input type="text" class="" name="purpose" maxlength="10" value="'.wc_get_order_item_meta($item_id, 'purpose', true).'" /></td>';
-            echo '<td colspan="2"><input type="text" class="date-picker" name="date_of_purchase" maxlength="10" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" id="dp1621912214881" value="'.wc_get_order_item_meta($item_id, 'date_of_purchase', true).'"/></td>';
+            echo esc_html('<td colspan="1">' . get_the_title($val) . '<td>');
+            echo esc_html('<td colspan="1">' . $address . '<td>');
+            echo esc_html('<td colspan="1">' . $_product->get_weight() . '<td>');
+            echo esc_html('<td colspan="2"><input type="text" class="" name="purpose" maxlength="10" value="'.wc_get_order_item_meta($item_id, 'purpose', true).'" /></td>');
+            echo esc_html('<td colspan="2"><input type="text" class="date-picker" name="date_of_purchase" maxlength="10" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" id="dp1621912214881" value="'.wc_get_order_item_meta($item_id, 'date_of_purchase', true).'"/></td>');
          }
 
         public function add_order_item_meta($item_id, $values) {
@@ -605,14 +605,14 @@ if (!class_exists('INV_EMPYE_editor')) {
             if( empty( $document ) || empty( $data ) ) return;
             $data = $this->get_current_values_for_document_po( $document, $data );
             ?>
-            <div class="wcpdf-data-fields" data-document="<?php echo $document->get_type(); ?>" data-order_id="<?php echo WCX_Order::get_id( $document->order ); ?>">
+            <div class="wcpdf-data-fields" data-document="<?php echo esc_html($document->get_type()); ?>" data-order_id="<?php echo esc_html(WCX_Order::get_id( $document->order )); ?>">
                 <section class="wcpdf-data-fields-section number-date">
                     <!-- Title -->
                     <h4>
-                        <?php echo $document->get_title(); ?>
+                        <?php echo esc_html($document->get_title()); ?>
                         <?php if( $document->exists() && ( isset( $data['number'] ) || isset( $data['date'] ) ) ) : ?>
                             <span class="wpo-wcpdf-edit-date-number dashicons dashicons-edit"></span>
-                            <span class="wpo-wcpdf-delete-document dashicons dashicons-trash" data-nonce="<?php echo wp_create_nonce( "wpo_wcpdf_delete_document" ); ?>"></span>
+                            <span class="wpo-wcpdf-delete-document dashicons dashicons-trash" data-nonce="<?php echo esc_html(wp_create_nonce( "wpo_wcpdf_delete_document" )); ?>"></span>
                             <?php do_action( 'wpo_wcpdf_document_actions_po', $document ); ?>
                         <?php endif; ?>
                     </h4>
@@ -621,21 +621,21 @@ if (!class_exists('INV_EMPYE_editor')) {
                     <div class="read-only">
                         <?php if( $document->exists() ) : ?>
                             <?php if( isset( $data['number'] ) ) : ?>
-                            <div class="<?php $document->get_type(); ?>-number">
-                                <p class="form-field <?php echo $data['number']['name']; ?>_field">	
+                            <div class="<?php echo esc_html($document->get_type()); ?>-number">
+                                <p class="form-field <?php echo esc_html($data['number']['name']); ?>_field">	
                                     <p>
-                                        <span><strong><?php echo $data['number']['label']; ?></strong></span>
-                                        <span><?php $data['number']['formatted']; ?></span>
+                                        <span><strong><?php echo esc_html($data['number']['label']); ?></strong></span>
+                                        <span><?php esc_html($data['number']['formatted']); ?></span>
                                     </p>
                                 </p>
                             </div>
                             <?php endif; ?>
                             <?php if( isset( $data['date'] ) ) : ?>
-                            <div class="<?php echo $document->get_type(); ?>-date">
+                            <div class="<?php echo esc_html($document->get_type()); ?>-date">
                                 <p class="form-field form-field-wide">
                                     <p>
-                                        <span><strong><?php echo $data['date']['label']; ?></strong></span>
-                                        <span><?php $data['date']['formatted']; ?></span>
+                                        <span><strong><?php echo esc_html($data['date']['label']); ?></strong></span>
+                                        <span><?php echo esc_html($data['date']['formatted']); ?></span>
                                     </p>
                                 </p>
                             </div>
@@ -649,15 +649,15 @@ if (!class_exists('INV_EMPYE_editor')) {
                     <!-- Editable -->
                     <div class="editable">
                         <?php if( isset( $data['number'] ) ) : ?>
-                        <p class="form-field <?php echo $data['number']['name']; ?>_field ">
-                            <label for="<?php echo $data['number']['name']; ?>"><?php echo $data['number']['label']; ?></label>
-                            <input type="text" class="short" style="" name="<?php echo $data['number']['name']; ?>" id="<?php echo  $data['number']['name']; ?>" value="<?php echo  $data['number']['plain']; ?>" disabled="disabled" > (<?php echo __( 'unformatted!', 'inv_empye' ) ?>)
+                        <p class="form-field <?php echo esc_html($data['number']['name']); ?>_field ">
+                            <label for="<?php echo esc_html($data['number']['name']); ?>"><?php echo esc_html($data['number']['label']); ?></label>
+                            <input type="text" class="short" style="" name="<?php echo esc_html($data['number']['name']); ?>" id="<?php echo  esc_html($data['number']['name']); ?>" value="<?php echo esc_html( $data['number']['plain']); ?>" disabled="disabled" > (<?php echo esc_html(__( 'unformatted!', 'inv_empye' )) ?>)
                         </p>
                         <?php endif; ?>
                         <?php if( isset( $data['date'] ) ) : ?>
                         <p class="form-field form-field-wide">
-                            <label for="<?php echo  $data['date']['name'] ?>[date]"><?php echo  $data['date']['label']; ?></label>
-                            <input type="text" class="date-picker-field" name="<?php echo  $data['date']['name'] ?>[date]" id="<?php echo  $data['date']['name'] ?>[date]" maxlength="10" value="<?php echo  $data['date']['date']; ?>" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" disabled="disabled"/>@<input type="number" class="hour" disabled="disabled" placeholder="<?php _e( 'h', 'woocommerce' ); ?>" name="<?php echo  $data['date']['name']; ?>[hour]" id="<?php echo  $data['date']['name']; ?>[hour]" min="0" max="23" size="2" value="<?php echo  $data['date']['hour']; ?>" pattern="([01]?[0-9]{1}|2[0-3]{1})" />:<input type="number" class="minute" placeholder="<?php _e( 'm', 'woocommerce' ); ?>" name="<?php echo  $data['date']['name']; ?>[minute]" id="<?php echo  $data['date']['name']; ?>[minute]" min="0" max="59" size="2" value="<?php echo  $data['date']['minute']; ?>" pattern="[0-5]{1}[0-9]{1}"  disabled="disabled" />
+                            <label for="<?php echo  esc_html($data['date']['name']); ?>[date]"><?php echo  esc_html($data['date']['label']); ?></label>
+                            <input type="text" class="date-picker-field" name="<?php echo  esc_html($data['date']['name']); ?>[date]" id="<?php echo  esc_html($data['date']['name']); ?>[date]" maxlength="10" value="<?php echo  esc_html($data['date']['date']); ?>" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" disabled="disabled"/>@<input type="number" class="hour" disabled="disabled" placeholder="<?php _e( 'h', 'woocommerce' ); ?>" name="<?php echo  esc_html($data['date']['name']); ?>[hour]" id="<?php echo  esc_html($data['date']['name']); ?>[hour]" min="0" max="23" size="2" value="<?php echo esc_html($data['date']['hour']); ?>" pattern="([01]?[0-9]{1}|2[0-3]{1})" />:<input type="number" class="minute" placeholder="<?php _e( 'm', 'woocommerce' ); ?>" name="<?php echo esc_html($data['date']['name']); ?>[minute]" id="<?php echo esc_html($data['date']['name']); ?>[minute]" min="0" max="59" size="2" value="<?php echo esc_html($data['date']['minute']); ?>" pattern="[0-5]{1}[0-9]{1}"  disabled="disabled" />
                         </p>
                         <?php endif; ?>
                     </div>
@@ -671,17 +671,17 @@ if (!class_exists('INV_EMPYE_editor')) {
                     <section class="wcpdf-data-fields-section notes">
                         <p class="form-field form-field-wide">
                             <div>
-                                <span><strong><?php echo $data['notes']['label']; ?></strong></span>
+                                <span><strong><?php echo esc_html($data['notes']['label']); ?></strong></span>
                                 <span class="wpo-wcpdf-edit-document-notes dashicons dashicons-edit"></span>
                             </div>
                             <!-- Read only -->
                             <div class="read-only">
-                                <p><?php echo $data['notes']['value']; ?></p>
+                                <p><?php echo esc_html($data['notes']['value']); ?></p>
                             </div>
                             <!-- Editable -->
                             <div class="editable">
                                 <p class="form-field form-field-wide">
-                                    <p><textarea name="<?php echo $data['notes']['name']; ?>" class="<?php echo  $data['notes']['name']; ?>" cols="60" rows="5" disabled="disabled"><?php echo  $data['notes']['value']; ?></textarea></p>
+                                    <p><textarea name="<?php echo esc_html($data['notes']['name']); ?>" class="<?php echo  esc_html($data['notes']['name']); ?>" cols="60" rows="5" disabled="disabled"><?php echo  esc_html($data['notes']['value']); ?></textarea></p>
                                 </p>
                             </div>
                         </p>
@@ -719,7 +719,7 @@ if (!class_exists('INV_EMPYE_editor')) {
                                             <?php
                                             foreach ( $mails as $mail ) {
                                                     if ( in_array( $mail->id, $available_emails ) && 'no' !== $mail->enabled ) {
-                                                            echo '<option value="send_email_' . esc_attr( $mail->id ) . '">' . esc_html( $mail->title ) . '</option>';
+                                                            echo esc_html('<option value="send_email_' . esc_attr( $mail->id ) . '">' . esc_html( $mail->title ) . '</option>');
                                                     }
                                             } ?>
                                             <?php
@@ -1047,12 +1047,12 @@ if (!class_exists('INV_EMPYE_editor')) {
             <div class="inv_empye_wc_products_linked">
                 <div class="stats">
                     <div class="nb_products">
-                        <p class="number"><?php echo count($products); ?></p>
-                        <p class="label"><?php echo _n("product", "products", count($products), INV_EMPYE_TEXT_DOMAIN); ?></p>
+                        <p class="number"><?php echo esc_html(count($products)); ?></p>
+                        <p class="label"><?php echo esc_html(_n("product", "products", count($products), INV_EMPYE_TEXT_DOMAIN)); ?></p>
                     </div>
                     <div class="nb_low_stocks">
-                        <p class="number"><?php echo count($low_stock_products); ?></p>
-                        <p class="label"><?php echo _n("low stock product", "low stock products", count($low_stock_products), INV_EMPYE_TEXT_DOMAIN); ?></p>
+                        <p class="number"><?php echo esc_html(count($low_stock_products)); ?></p>
+                        <p class="label"><?php echo esc_html(_n("low stock product", "low stock products", count($low_stock_products), INV_EMPYE_TEXT_DOMAIN)); ?></p>
                     </div>
                 </div>
                 <a href="<?php echo esc_url($url); ?>" class="button-secondary"><?php _e("Show products", INV_EMPYE_TEXT_DOMAIN); ?></a>
@@ -1135,11 +1135,11 @@ if (!class_exists('INV_EMPYE_editor')) {
                         if ($current == $index) :
                             ?>
                             <li class="current">
-                                <a href="<?php echo esc_url($tab['url']); ?>"><?php echo $tab['label']; ?></a>
+                                <a href="<?php echo esc_url($tab['url']); ?>"><?php echo esc_html($tab['label']); ?></a>
                             </li>
                         <?php else : ?>
                             <li>
-                                <a href="<?php echo esc_url($tab['url']); ?>"><?php echo $tab['label']; ?></a>
+                                <a href="<?php echo esc_url($tab['url']); ?>"><?php echo esc_html($tab['label']); ?></a>
                             </li>
                         <?php
                         endif;
