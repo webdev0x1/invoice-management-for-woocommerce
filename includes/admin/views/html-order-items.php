@@ -28,9 +28,9 @@ if ( wc_tax_enabled() ) {
 			<tr>
 				<th class="item sortable" colspan="2" data-sort="string-ins"><?php esc_html_e( 'Item', 'woocommerce' ); ?></th>
 				<?php do_action( 'woocommerce_admin_order_item_headers', $order ); ?>
-				<th class="item_cost sortable" data-sort="float"><?php esc_html_e( 'Costss', 'woocommerce' ); ?></th>
-				<th class="quantity sortable" data-sort="int"><?php esc_html_e( 'Qty's, 'woocommerce' ); ?></th>
-				<th class="line_cost sortable" data-sort="float"><?php esc_html_e( 'Total', 'woocommerce' ); ?></th>
+				<th class="item_cost sortable" data-sort="float"><?php esc_html(_e( 'Costs', 'woocommerce' )); ?></th>
+				<th class="quantity sortable" data-sort="int"><?php esc_html(_e( 'Qtys', 'woocommerce' )); ?></th>
+				<th class="line_cost sortable" data-sort="float"><?php esc_html(_e( 'Total', 'woocommerce' )); ?></th>
 				<?php
 				if ( ! empty( $order_taxes ) ) :
 					foreach ( $order_taxes as $tax_id => $tax_item ) :
